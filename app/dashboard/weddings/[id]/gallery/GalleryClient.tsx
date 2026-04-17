@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { FiDownload, FiFilter, FiGrid, FiImage, FiClock, FiLoader } from "react-icons/fi";
+import { FiDownload, FiFilter, FiGrid, FiImage, FiClock, FiLoader, FiX } from "react-icons/fi";
 import { downloadGalleryAsZip } from "@/lib/utils";
 
 interface Photo {
   id: string;
   storage_path: string;
+  thumbnail_path: string | null;
   task_id: string | null;
   created_at: string;
 }
@@ -27,10 +28,17 @@ export default function GalleryClient({ photos, tasks, weddingTitle }: GalleryCl
   const [filter, setFilter] = useState<string>("all");
   const [downloading, setDownloading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
   const filteredPhotos = filter === "all" 
     ? photos 
     : photos.filter((p) => p.task_id === filter);
+
+  function getPhotoUrl(path: string) {
+    return `${supabaseUrl}/storage/v1/object/public/photos/${path}`;
+  }
 
   async function handleDownload() {
     if (photos.length === 0) return;
@@ -111,16 +119,21 @@ export default function GalleryClient({ photos, tasks, weddingTitle }: GalleryCl
           {filteredPhotos.map((photo) => {
             const task = tasks.find((t) => t.id === photo.task_id);
             const taskTitle = task ? `${task.emoji} ${task.title}` : "Свободное фото";
+            const imageUrl = photo.thumbnail_path 
+              ? getPhotoUrl(photo.thumbnail_path) 
+              : getPhotoUrl(photo.storage_path);
             
             return (
-              <div
+              <button
                 key={photo.id}
-                className="relative group aspect-square bg-gray-100 rounded-xl overflow-hidden"
+                onClick={() => setSelectedPhoto(photo)}
+                className="relative group aspect-square bg-gray-100 rounded-xl overflow-hidden cursor-pointer"
               >
                 <img
-                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/photos/${photo.storage_path}`}
+                  src={imageUrl}
                   alt="Фото"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -135,9 +148,29 @@ export default function GalleryClient({ photos, tasks, weddingTitle }: GalleryCl
                     })}
                   </p>
                 </div>
-              </div>
+              </button>
             );
           })}
+        </div>
+      )}
+
+      {selectedPhoto && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <button 
+            className="absolute top-4 right-4 text-white/70 hover:text-white p-2"
+            onClick={() => setSelectedPhoto(null)}
+          >
+            <FiX className="w-8 h-8" />
+          </button>
+          <img
+            src={getPhotoUrl(selectedPhoto.storage_path)}
+            alt="Фото"
+            className="max-w-full max-h-full object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
 

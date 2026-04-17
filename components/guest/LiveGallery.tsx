@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Share2 } from "lucide-react";
+import { FiShare2 } from "react-icons/fi";
 
 interface Photo {
   id: string;
   storage_path: string;
+  thumbnail_path?: string | null;
 }
 
 interface LiveGalleryProps {
@@ -75,7 +76,7 @@ export default function LiveGallery({ weddingId, initialPhotos }: LiveGalleryPro
           onClick={handleShare}
           className="flex items-center gap-2 text-sm font-sans text-gray-500 hover:text-gold-400 transition-colors"
         >
-          <Share2 size={16} />
+          <FiShare2 className="w-4 h-4" />
           Поделиться
         </button>
       </div>
@@ -89,7 +90,7 @@ export default function LiveGallery({ weddingId, initialPhotos }: LiveGalleryPro
             }`}
           >
             <img
-              src={getUrl(photo.storage_path)}
+              src={getUrl(photo.thumbnail_path || photo.storage_path)}
               alt=""
               className="w-full h-full object-cover"
             />

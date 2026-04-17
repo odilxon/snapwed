@@ -28,7 +28,7 @@ export default async function GalleryPage({
 
   const { data: photos } = await supabase
     .from("photos")
-    .select("id, storage_path, task_id, created_at")
+    .select("id, storage_path, thumbnail_path, task_id, created_at")
     .eq("wedding_id", id)
     .order("created_at", { ascending: false });
 

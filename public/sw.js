@@ -1,15 +1,10 @@
 const CACHE_NAME = 'snapwed-v1';
-const STATIC_ASSETS = [
-  '/',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
+      return cache.add('/')
+        .catch(() => console.log('Cache / failed'));
     })
   );
   self.skipWaiting();
@@ -30,49 +25,25 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  const url = new URL(request.url);
-
+  
   if (request.method !== 'GET') return;
 
-  if (url.pathname.startsWith('/w/')) {
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request)
-          .then((response) => {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, clone);
-            });
-            return response;
-          })
-          .catch(() => {
-            return caches.match('/');
-          });
-      })
-    );
-    return;
-  }
-
-  if (request.destination === 'image') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (response.ok && request.url.includes('/w/')) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, clone);
+            cache.put(request, clone).catch(() => {});
           });
-          return response;
-        })
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      return cached || fetch(request);
-    })
+        }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(request).then((cached) => {
+          return cached || caches.match('/');
+        });
+      })
   );
 });
 
@@ -84,8 +55,8 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'SnapWed', {
       body: data.body || 'Новое фото загружено!',
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
+      icon: '/icon-192.svg',
+      badge: '/icon-192.svg',
       data: data.url,
     })
   );

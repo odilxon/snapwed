@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import QRDisplay from "@/components/dashboard/QRDisplay";
 import { FiHeart, FiCalendar, FiMapPin, FiZap } from "react-icons/fi";
+import { headers } from "next/headers";
 
 export default async function InvitePage({
   params,
@@ -21,7 +22,10 @@ export default async function InvitePage({
 
   if (!wedding) notFound();
 
-  const guestUrl = `${process.env.NEXT_PUBLIC_APP_URL}/w/${wedding.slug}`;
+  const headersList = await headers();
+  const host = headersList.get("host") || "localhost:3000";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const guestUrl = `${protocol}://${host}/w/${wedding.slug}`;
 
   return (
     <div className="p-8">
