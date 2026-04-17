@@ -25,10 +25,10 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="p-8 max-w-5xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-display text-gray-900 mb-1">Добро пожаловать! 👋</h1>
-        <p className="text-gray-500">Управляйте свадьбами и просматривайте фотографии</p>
+    <div className="max-w-5xl">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-display text-gray-900 mb-1">Добро пожаловать!</h1>
+        <p className="text-gray-500 text-sm md:text-base">Управляйте свадьбами и просматривайте фотографии</p>
       </div>
 
       {/* Stats */}

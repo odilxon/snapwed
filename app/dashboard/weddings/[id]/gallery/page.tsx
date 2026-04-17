@@ -35,10 +35,12 @@ export default async function GalleryPage({
   const tasks = (wedding.tasks as Task[]) || [];
 
   return (
-    <GalleryClient 
-      photos={photos || []} 
-      tasks={tasks} 
-      weddingTitle={wedding.title} 
-    />
+    <div className="md:pl-0">
+      <GalleryClient 
+        photos={photos || []} 
+        tasks={tasks} 
+        weddingTitle={wedding.title} 
+      />
+    </div>
   );
 }

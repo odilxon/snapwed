@@ -88,10 +88,10 @@ export default function NewWeddingPage() {
   }
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-display text-gray-900">Новая свадьба</h1>
-        <p className="text-gray-500 mt-1">Шаг {step} из 2</p>
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-xl md:text-2xl font-display text-gray-900">Новая свадьба</h1>
+        <p className="text-gray-500 mt-1 text-sm md:text-base">Шаг {step} из 2</p>
         <div className="flex gap-2 mt-3">
           <div className={`h-1.5 flex-1 rounded-full ${step >= 1 ? "bg-amber-400" : "bg-gray-200"}`} />
           <div className={`h-1.5 flex-1 rounded-full ${step >= 2 ? "bg-amber-400" : "bg-gray-200"}`} />

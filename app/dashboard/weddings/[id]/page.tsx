@@ -39,15 +39,15 @@ export default async function WeddingDetailPage({
   );
 
   return (
-    <div className="p-8">
-      <div className="flex items-start justify-between mb-8">
+    <div>
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl font-display text-gray-900">{wedding.title}</h1>
-          <div className="flex items-center gap-3 mt-1 text-gray-500">
+          <h1 className="text-xl md:text-2xl font-display text-gray-900">{wedding.title}</h1>
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-1 text-gray-500 text-sm">
             <span className="flex items-center gap-1">
               <FiCalendar className="w-4 h-4" />
               {new Date(wedding.date).toLocaleDateString("ru-RU", {
-                day: "numeric", month: "long", year: "numeric"
+                day: "numeric", month: "short", year: "numeric"
               })}
             </span>
             {wedding.venue && (
@@ -58,86 +58,87 @@ export default async function WeddingDetailPage({
             )}
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link
             href={guestUrl}
             target="_blank"
-            className="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-4 py-2.5 rounded-xl transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 md:px-4 py-2 rounded-xl transition-colors"
           >
             <FiExternalLink className="w-4 h-4" />
-            Страница гостя
+            <span className="hidden sm:inline">Страница гостя</span>
+            <span className="sm:hidden">Гость</span>
           </Link>
           <Link
             href={`/dashboard/weddings/${id}/invite`}
-            className="flex items-center gap-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 px-4 py-2.5 rounded-xl transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 px-3 md:px-4 py-2 rounded-xl transition-colors"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="2" />
               <path d="M7 7h3v3H7zM14 7h3v3h-3zM7 14h3v3H7zM14 14h3v3h-3z" />
             </svg>
-            QR-код
+            QR
           </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+        <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+            <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-amber-50 flex items-center justify-center">
               <FiUsers className="w-4 h-4 text-amber-500" />
             </div>
-            <span className="text-xs text-gray-400">Гостей</span>
+            <span className="text-xs text-gray-400 hidden sm:inline">Гостей</span>
           </div>
-          <p className="text-2xl font-display text-gray-900">{sessions?.length || 0}</p>
+          <p className="text-xl md:text-2xl font-display text-gray-900">{sessions?.length || 0}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+            <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-blue-50 flex items-center justify-center">
               <FiCamera className="w-4 h-4 text-blue-500" />
             </div>
-            <span className="text-xs text-gray-400">Фото</span>
+            <span className="text-xs text-gray-400 hidden sm:inline">Фото</span>
           </div>
-          <p className="text-2xl font-display text-gray-900">{photos?.length || 0}</p>
+          <p className="text-xl md:text-2xl font-display text-gray-900">{photos?.length || 0}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
+            <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-green-50 flex items-center justify-center">
               <FiCheckSquare className="w-4 h-4 text-green-500" />
             </div>
-            <span className="text-xs text-gray-400">Заданий</span>
+            <span className="text-xs text-gray-400 hidden sm:inline">Заданий</span>
           </div>
-          <p className="text-2xl font-display text-gray-900">{completedTasks.length}/{tasks.length}</p>
+          <p className="text-xl md:text-2xl font-display text-gray-900">{completedTasks.length}/{tasks.length}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${wedding.is_active ? "bg-green-50" : "bg-gray-100"}`}>
+            <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${wedding.is_active ? "bg-green-50" : "bg-gray-100"}`}>
               <FiHeart className={`w-4 h-4 ${wedding.is_active ? "text-green-500" : "text-gray-400"}`} />
             </div>
-            <span className="text-xs text-gray-400">Статус</span>
+            <span className="text-xs text-gray-400 hidden sm:inline">Статус</span>
           </div>
-          <p className={`text-lg font-display ${wedding.is_active ? "text-green-600" : "text-gray-500"}`}>
+          <p className={`text-base md:text-lg font-display ${wedding.is_active ? "text-green-600" : "text-gray-500"}`}>
             {wedding.is_active ? "Активна" : "Завершена"}
           </p>
         </div>
       </div>
 
       {tasks.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
-          <h2 className="font-display text-lg text-gray-900 mb-4">Задания</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 mb-6">
+          <h2 className="font-display text-base md:text-lg text-gray-900 mb-3 md:mb-4">Задания</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
             {tasks.map((task) => {
               const done = photos?.some((p) => p.task_id === task.id);
               return (
                 <div
                   key={task.id}
-                  className={`p-3 rounded-xl text-sm flex items-center gap-2 ${
+                  className={`p-2 md:p-3 rounded-xl text-sm flex items-center gap-2 ${
                     done ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-500"
                   }`}
                 >
-                  {done && <FiCheck className="w-4 h-4" />}
+                  {done && <FiCheck className="w-4 h-4 flex-shrink-0" />}
                   <span>{task.emoji}</span>
                   <span className="truncate">{task.title}</span>
                 </div>
@@ -147,9 +148,9 @@ export default async function WeddingDetailPage({
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg text-gray-900">
+          <h2 className="font-display text-base md:text-lg text-gray-900">
             Фотографии {photos?.length ? `(${photos.length})` : ""}
           </h2>
           <Link
@@ -157,10 +158,10 @@ export default async function WeddingDetailPage({
             className="flex items-center gap-2 text-sm font-medium text-amber-600 hover:text-amber-700"
           >
             <FiGrid className="w-4 h-4" />
-            Открыть галерею
+            Галерея
           </Link>
         </div>
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-3">
           {(photos || []).slice(0, 12).map((photo) => (
             <div key={photo.id} className="aspect-square bg-gray-100 rounded-xl overflow-hidden">
               <img
@@ -171,7 +172,7 @@ export default async function WeddingDetailPage({
             </div>
           ))}
           {(photos || []).length === 0 && (
-            <div className="col-span-full text-center py-12 text-gray-400">
+            <div className="col-span-full text-center py-8 md:py-12 text-gray-400">
               Пока нет фотографий
             </div>
           )}

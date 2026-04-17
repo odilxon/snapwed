@@ -14,15 +14,15 @@ export default async function WeddingsPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
         <div>
           <h1 className="text-2xl font-display text-gray-900">Мои свадьбы</h1>
-          <p className="text-gray-500 mt-1">Управляйте своими свадебными событиями</p>
+          <p className="text-gray-500 mt-1 text-sm md:text-base">Управляйте своими свадебными событиями</p>
         </div>
         <Link
           href="/dashboard/weddings/new"
-          className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium px-5 py-2.5 rounded-xl transition-colors"
+          className="flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium px-5 py-2.5 rounded-xl transition-colors"
         >
           <FiPlus className="w-5 h-5" />
           Новая свадьба

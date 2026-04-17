@@ -11,32 +11,32 @@ export default async function SettingsPage() {
     .single();
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-display text-gray-900">Настройки</h1>
-        <p className="text-gray-500 mt-1">Ваш аккаунт и тарифный план</p>
+    <div>
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-xl md:text-2xl font-display text-gray-900">Настройки</h1>
+        <p className="text-gray-500 mt-1 text-sm md:text-base">Ваш аккаунт и тарифный план</p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-5">
-        <h2 className="font-display text-lg text-gray-900 mb-4">Профиль</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-gray-50 rounded-xl">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 mb-5">
+        <h2 className="font-display text-base md:text-lg text-gray-900 mb-4">Профиль</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          <div className="p-3 md:p-4 bg-gray-50 rounded-xl">
             <p className="text-xs text-gray-400 mb-1">Имя</p>
-            <p className="text-gray-900 font-medium flex items-center gap-2">
+            <p className="text-gray-900 font-medium flex items-center gap-2 text-sm md:text-base">
               <FiSettings className="w-4 h-4 text-gray-400" />
               {profile?.full_name || "—"}
             </p>
           </div>
-          <div className="p-4 bg-gray-50 rounded-xl">
+          <div className="p-3 md:p-4 bg-gray-50 rounded-xl">
             <p className="text-xs text-gray-400 mb-1">Email</p>
-            <p className="text-gray-900 font-medium flex items-center gap-2">
-              <FiMail className="w-4 h-4 text-gray-400" />
+            <p className="text-gray-900 font-medium flex items-center gap-2 text-sm md:text-base truncate">
+              <FiMail className="w-4 h-4 text-gray-400 flex-shrink-0" />
               {user?.email}
             </p>
           </div>
-          <div className="p-4 bg-gray-50 rounded-xl">
+          <div className="p-3 md:p-4 bg-gray-50 rounded-xl">
             <p className="text-xs text-gray-400 mb-1">Аккаунт создан</p>
-            <p className="text-gray-900 font-medium flex items-center gap-2">
+            <p className="text-gray-900 font-medium flex items-center gap-2 text-sm md:text-base">
               <FiCalendar className="w-4 h-4 text-gray-400" />
               {new Date(user?.created_at || "").toLocaleDateString("ru-RU")}
             </p>

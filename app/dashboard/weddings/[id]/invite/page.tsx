@@ -28,20 +28,20 @@ export default async function InvitePage({
   const guestUrl = `${protocol}://${host}/w/${wedding.slug}`;
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-display text-gray-900">Приглашение гостей</h1>
-        <p className="text-gray-500 mt-1">{wedding.title}</p>
+    <div>
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-xl md:text-2xl font-display text-gray-900">Приглашение гостей</h1>
+        <p className="text-gray-500 mt-1 text-sm md:text-base">{wedding.title}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <QRDisplay url={guestUrl} weddingTitle={wedding.title} />
 
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6">
           <h2 className="font-display text-lg text-gray-900 mb-4">Превью для гостей</h2>
           <div className="mx-auto max-w-[280px] bg-[#FFFBF8] rounded-3xl border-4 border-gray-200 overflow-hidden shadow-lg">
-            <div className="h-28 bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center">
-              <div className="w-14 h-14 rounded-full bg-white/80 backdrop-blur flex items-center justify-center">
+            <div className="h-24 md:h-28 bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/80 backdrop-blur flex items-center justify-center">
                 <FiHeart className="w-7 h-7 text-amber-500" />
               </div>
             </div>
