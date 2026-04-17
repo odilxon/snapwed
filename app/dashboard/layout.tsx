@@ -21,10 +21,12 @@ export default async function DashboardLayout({
   const profile = profileData as { full_name: string | null; plan: string } | null;
 
   return (
-    <div className="flex min-h-screen bg-[#F8F7F4]">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar userName={profile?.full_name || user.email} plan={profile?.plan} />
       <main className="flex-1 overflow-auto">
-        {children}
+        <div className="max-w-7xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );

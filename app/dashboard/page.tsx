@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { Heart, Camera, Users, Plus } from "lucide-react";
+import { FiHeart, FiCamera, FiUsers, FiPlus, FiArrowRight, FiCalendar, FiMapPin } from "react-icons/fi";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -8,80 +8,97 @@ export default async function DashboardPage() {
 
   const { data: weddings } = await supabase
     .from("weddings")
-    .select("id, title, date, is_active")
+    .select("id, title, slug, date, venue, is_active")
     .eq("owner_id", user!.id)
     .order("created_at", { ascending: false })
     .limit(5);
 
-  const { count: photosCount } = await supabase
-    .from("photos")
-    .select("id", { count: "exact", head: true })
-    .in("wedding_id", (weddings || []).map((w) => w.id));
+  const weddingIds = (weddings || []).map((w) => w.id);
+  
+  let photosCount = 0;
+  if (weddingIds.length > 0) {
+    const { count } = await supabase
+      .from("photos")
+      .select("id", { count: "exact", head: true })
+      .in("wedding_id", weddingIds);
+    photosCount = count || 0;
+  }
 
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-5xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-display text-gray-900">Дашборд</h1>
-        <p className="text-gray-500 font-sans mt-1">Обзор ваших свадеб и фотографий</p>
+        <h1 className="text-3xl font-display text-gray-900 mb-1">Добро пожаловать! 👋</h1>
+        <p className="text-gray-500">Управляйте свадьбами и просматривайте фотографии</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gold-50 flex items-center justify-center">
-              <Heart size={20} className="text-gold-400" />
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center">
+              <FiHeart className="w-7 h-7 text-amber-500" />
             </div>
-            <span className="text-gray-500 font-sans text-sm">Свадьбы</span>
+            <div>
+              <p className="text-3xl font-display text-gray-900">{weddings?.length || 0}</p>
+              <p className="text-sm text-gray-400">Свадеб</p>
+            </div>
           </div>
-          <p className="text-3xl font-display text-gray-900">{weddings?.length || 0}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gold-50 flex items-center justify-center">
-              <Camera size={20} className="text-gold-400" />
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
+              <FiCamera className="w-7 h-7 text-blue-500" />
             </div>
-            <span className="text-gray-500 font-sans text-sm">Всего фото</span>
+            <div>
+              <p className="text-3xl font-display text-gray-900">{photosCount}</p>
+              <p className="text-sm text-gray-400">Всего фото</p>
+            </div>
           </div>
-          <p className="text-3xl font-display text-gray-900">{photosCount || 0}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gold-50 flex items-center justify-center">
-              <Users size={20} className="text-gold-400" />
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center">
+              <FiUsers className="w-7 h-7 text-green-500" />
             </div>
-            <span className="text-gray-500 font-sans text-sm">Активных свадеб</span>
+            <div>
+              <p className="text-3xl font-display text-gray-900">
+                {weddings?.filter((w) => w.is_active).length || 0}
+              </p>
+              <p className="text-sm text-gray-400">Активных</p>
+            </div>
           </div>
-          <p className="text-3xl font-display text-gray-900">
-            {weddings?.filter((w) => w.is_active).length || 0}
-          </p>
         </div>
       </div>
 
       {/* Recent weddings */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
-          <h2 className="font-display text-gray-900 text-lg">Последние свадьбы</h2>
+          <h2 className="font-display text-lg text-gray-900">Последние свадьбы</h2>
           <Link
             href="/dashboard/weddings/new"
-            className="flex items-center gap-2 bg-gold-400 hover:bg-gold-600 text-dark-bg font-semibold text-sm px-4 py-2 rounded-lg transition-colors font-sans"
+            className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors"
           >
-            <Plus size={16} />
+            <FiPlus className="w-4 h-4" />
             Создать
           </Link>
         </div>
 
         {!weddings?.length ? (
-          <div className="text-center py-16">
-            <div className="text-4xl mb-3">💍</div>
-            <p className="text-gray-400 font-sans mb-4">У вас ещё нет свадеб</p>
+          <div className="text-center py-16 px-6">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-50 flex items-center justify-center">
+              <FiHeart className="w-10 h-10 text-amber-400" />
+            </div>
+            <h3 className="text-xl font-display text-gray-900 mb-2">Начните с первой свадьбы</h3>
+            <p className="text-gray-400 mb-6 max-w-sm mx-auto">
+              Создайте свадьбу, сгенерируйте QR-код и поделитесь с гостями
+            </p>
             <Link
               href="/dashboard/weddings/new"
-              className="inline-flex items-center gap-2 bg-gold-400 hover:bg-gold-600 text-dark-bg font-semibold px-6 py-3 rounded-lg transition-colors font-sans"
+              className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-gray-900 font-semibold px-6 py-3 rounded-xl transition-colors"
             >
-              <Plus size={16} />
+              <FiPlus className="w-5 h-5" />
               Создать первую свадьбу
             </Link>
           </div>
@@ -91,32 +108,43 @@ export default async function DashboardPage() {
               <Link
                 key={wedding.id}
                 href={`/dashboard/weddings/${wedding.id}`}
-                className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between px-6 py-5 hover:bg-gray-50 transition-colors group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gold-50 flex items-center justify-center text-lg">
-                    💍
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center">
+                    <FiHeart className="w-6 h-6 text-amber-500" />
                   </div>
                   <div>
-                    <p className="font-sans text-gray-900 font-medium">{wedding.title}</p>
-                    <p className="text-xs text-gray-400 font-sans">
-                      {new Date(wedding.date).toLocaleDateString("ru-RU", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </p>
+                    <p className="font-medium text-gray-900 group-hover:text-amber-600 transition-colors">{wedding.title}</p>
+                    <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <FiCalendar className="w-3 h-3" />
+                        {new Date(wedding.date).toLocaleDateString("ru-RU", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </span>
+                      {wedding.venue && (
+                        <span className="flex items-center gap-1">
+                          <FiMapPin className="w-3 h-3" />
+                          {wedding.venue}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full font-sans ${
-                    wedding.is_active
-                      ? "bg-green-50 text-green-600"
-                      : "bg-gray-100 text-gray-400"
-                  }`}
-                >
-                  {wedding.is_active ? "Активна" : "Завершена"}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium ${
+                      wedding.is_active
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-500"
+                    }`}
+                  >
+                    {wedding.is_active ? "Активна" : "Завершена"}
+                  </span>
+                  <FiArrowRight className="w-5 h-5 text-gray-300 group-hover:text-amber-500 transition-colors" />
+                </div>
               </Link>
             ))}
           </div>

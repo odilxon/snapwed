@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FiHeart, FiMail, FiLock, FiUser, FiArrowRight, FiCheck } from "react-icons/fi";
+import { FiHeart, FiMail, FiLock, FiUser, FiArrowRight, FiCheck, FiInbox } from "react-icons/fi";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [emailSent, setEmailSent] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -20,19 +20,84 @@ export default function RegisterPage() {
 
     const { createClient } = await import("@/lib/supabase/client");
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: { 
+        data: { full_name: fullName },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
     if (error) {
-      setError(error.message);
+      if (error.message.includes("already") || error.message.includes("already exists")) {
+        setError("Аккаунт с таким email уже существует. Попробуйте войти.");
+      } else {
+        setError(error.message);
+      }
       setLoading(false);
+    } else if (data.user && data.session === null) {
+      setSuccess(true);
+      setEmailSent(email);
     } else {
-      router.push("/dashboard");
-      router.refresh();
+      setSuccess(true);
+      setEmailSent(email);
     }
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Left side - Decorative */}
+        <div className="hidden lg:flex flex-1 bg-gradient-to-br from-amber-400 via-amber-500 to-rose-400 items-center justify-center p-12">
+          <div className="max-w-md text-center text-white">
+            <div className="w-24 h-24 mx-auto mb-8 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center">
+              <FiHeart className="w-12 h-12" />
+            </div>
+            <h2 className="text-4xl font-display mb-4">Почти готово!</h2>
+            <p className="text-lg text-white/90 leading-relaxed">
+              Проверьте вашу почту и подтвердите email для активации аккаунта.
+            </p>
+          </div>
+        </div>
+
+        {/* Right side - Success */}
+        <div className="flex-1 flex items-center justify-center px-6 py-12">
+          <div className="w-full max-w-md text-center">
+            <div className="w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center">
+              <FiInbox className="w-10 h-10 text-green-600" />
+            </div>
+            
+            <h1 className="text-3xl font-display text-gray-900 mb-4">Письмо отправлено!</h1>
+            
+            <p className="text-gray-600 mb-2">
+              Мы отправили письмо с ссылкой для подтверждения на:
+            </p>
+            
+            <p className="text-lg font-medium text-gray-900 mb-8">
+              {emailSent}
+            </p>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-left">
+              <p className="text-amber-800 text-sm">
+                <strong>Не получили письмо?</strong>
+                <br />
+                Проверьте папку &laquo;Спам&raquo;. Ссылка действительна в течение 24 часов.
+              </p>
+            </div>
+
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium px-8 py-3.5 rounded-xl transition-colors"
+            >
+              Перейти к входу
+              <FiArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { QrCode, Users, Camera, CheckSquare, ExternalLink } from "lucide-react";
-import PhotoGrid from "@/components/dashboard/PhotoGrid";
+import { FiHeart, FiCalendar, FiMapPin, FiUsers, FiCamera, FiCheckSquare, FiExternalLink, FiGrid, FiCheck } from "react-icons/fi";
 
 export default async function WeddingDetailPage({
   params,
@@ -41,71 +40,106 @@ export default async function WeddingDetailPage({
 
   return (
     <div className="p-8">
-      {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>
           <h1 className="text-2xl font-display text-gray-900">{wedding.title}</h1>
-          <p className="text-gray-500 font-sans mt-1">
-            {new Date(wedding.date).toLocaleDateString("ru-RU", {
-              day: "numeric", month: "long", year: "numeric"
-            })}
-            {wedding.venue && ` · ${wedding.venue}`}
-          </p>
+          <div className="flex items-center gap-3 mt-1 text-gray-500">
+            <span className="flex items-center gap-1">
+              <FiCalendar className="w-4 h-4" />
+              {new Date(wedding.date).toLocaleDateString("ru-RU", {
+                day: "numeric", month: "long", year: "numeric"
+              })}
+            </span>
+            {wedding.venue && (
+              <span className="flex items-center gap-1">
+                <FiMapPin className="w-4 h-4" />
+                {wedding.venue}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex gap-2">
           <Link
             href={guestUrl}
             target="_blank"
-            className="flex items-center gap-2 text-sm font-sans text-gray-600 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-4 py-2.5 rounded-xl transition-colors"
           >
-            <ExternalLink size={14} />
+            <FiExternalLink className="w-4 h-4" />
             Страница гостя
           </Link>
           <Link
             href={`/dashboard/weddings/${id}/invite`}
-            className="flex items-center gap-2 text-sm font-sans font-semibold text-dark-bg bg-gold-400 hover:bg-gold-600 px-4 py-2 rounded-lg transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 px-4 py-2.5 rounded-xl transition-colors"
           >
-            <QrCode size={14} />
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M7 7h3v3H7zM14 7h3v3h-3zM7 14h3v3H7zM14 14h3v3h-3z" />
+            </svg>
             QR-код
           </Link>
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { icon: Users, value: sessions?.length || 0, label: "Гостей" },
-          { icon: Camera, value: photos?.length || 0, label: "Фото" },
-          { icon: CheckSquare, value: `${completedTasks.length}/${tasks.length}`, label: "Заданий" },
-          { icon: Camera, value: wedding.is_active ? "Активна" : "Завершена", label: "Статус" },
-        ].map(({ icon: Icon, value, label }, i) => (
-          <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <Icon size={16} className="text-gold-400" />
-              <span className="text-xs text-gray-400 font-sans">{label}</span>
+        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+              <FiUsers className="w-4 h-4 text-amber-500" />
             </div>
-            <p className="text-2xl font-display text-gray-900">{value}</p>
+            <span className="text-xs text-gray-400">Гостей</span>
           </div>
-        ))}
+          <p className="text-2xl font-display text-gray-900">{sessions?.length || 0}</p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+              <FiCamera className="w-4 h-4 text-blue-500" />
+            </div>
+            <span className="text-xs text-gray-400">Фото</span>
+          </div>
+          <p className="text-2xl font-display text-gray-900">{photos?.length || 0}</p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
+              <FiCheckSquare className="w-4 h-4 text-green-500" />
+            </div>
+            <span className="text-xs text-gray-400">Заданий</span>
+          </div>
+          <p className="text-2xl font-display text-gray-900">{completedTasks.length}/{tasks.length}</p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${wedding.is_active ? "bg-green-50" : "bg-gray-100"}`}>
+              <FiHeart className={`w-4 h-4 ${wedding.is_active ? "text-green-500" : "text-gray-400"}`} />
+            </div>
+            <span className="text-xs text-gray-400">Статус</span>
+          </div>
+          <p className={`text-lg font-display ${wedding.is_active ? "text-green-600" : "text-gray-500"}`}>
+            {wedding.is_active ? "Активна" : "Завершена"}
+          </p>
+        </div>
       </div>
 
-      {/* Tasks */}
       {tasks.length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
           <h2 className="font-display text-lg text-gray-900 mb-4">Задания</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {tasks.map((task) => {
               const done = photos?.some((p) => p.task_id === task.id);
               return (
                 <div
                   key={task.id}
-                  className={`p-3 rounded-xl text-sm font-sans ${
+                  className={`p-3 rounded-xl text-sm flex items-center gap-2 ${
                     done ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-500"
                   }`}
                 >
-                  <span className="mr-1">{task.emoji}</span>
-                  {task.title}
-                  {done && <span className="ml-1">✓</span>}
+                  {done && <FiCheck className="w-4 h-4" />}
+                  <span>{task.emoji}</span>
+                  <span className="truncate">{task.title}</span>
                 </div>
               );
             })}
@@ -113,12 +147,35 @@ export default async function WeddingDetailPage({
         </div>
       )}
 
-      {/* Photo Gallery */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 className="font-display text-lg text-gray-900 mb-4">
-          Фотографии {photos?.length ? `(${photos.length})` : ""}
-        </h2>
-        <PhotoGrid photos={photos || []} />
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-lg text-gray-900">
+            Фотографии {photos?.length ? `(${photos.length})` : ""}
+          </h2>
+          <Link
+            href={`/dashboard/weddings/${id}/gallery`}
+            className="flex items-center gap-2 text-sm font-medium text-amber-600 hover:text-amber-700"
+          >
+            <FiGrid className="w-4 h-4" />
+            Открыть галерею
+          </Link>
+        </div>
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {(photos || []).slice(0, 12).map((photo) => (
+            <div key={photo.id} className="aspect-square bg-gray-100 rounded-xl overflow-hidden">
+              <img
+                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/photos/${photo.storage_path}`}
+                alt="Фото"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+          {(photos || []).length === 0 && (
+            <div className="col-span-full text-center py-12 text-gray-400">
+              Пока нет фотографий
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
