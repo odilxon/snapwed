@@ -69,11 +69,11 @@ export default function QRDisplay({ url, weddingTitle }: QRDisplayProps) {
             fgColor="#0D0A0B"
             level="M"
             imageSettings={{
-              src: "/icon-192.png",
-              x: undefined,
-              y: undefined,
-              height: 36,
-              width: 36,
+              src: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#D4875A"/><path d="M50 75 C30 55 25 40 35 30 C45 20 50 30 50 30 C50 30 55 20 65 30 C75 40 70 55 50 75Z" fill="white"/></svg>'),
+              x: 30,
+              y: 30,
+              height: 40,
+              width: 40,
               excavate: true,
             }}
           />
