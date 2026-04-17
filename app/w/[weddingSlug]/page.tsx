@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Camera, Images } from "lucide-react";
+import { FiCamera, FiImage, FiHeart, FiCalendar, FiMapPin } from "react-icons/fi";
 
 export default async function GuestWeddingPage({
   params,
@@ -34,16 +34,18 @@ export default async function GuestWeddingPage({
     <div className="min-h-screen bg-[#FFFBF8] flex items-center justify-center px-4">
       <div className="w-full max-w-[430px]">
         {/* Cover */}
-        <div className="h-56 bg-gradient-to-br from-gold-400/30 via-rose-warm/20 to-gold-400/10 rounded-3xl flex items-center justify-center mb-6 relative overflow-hidden">
+        <div className="h-56 bg-gradient-to-br from-amber-400/30 via-rose-200/20 to-amber-400/10 rounded-3xl flex items-center justify-center mb-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-          <span className="text-7xl relative z-10">💍</span>
+          <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-full p-6 shadow-sm">
+            <FiHeart className="w-16 h-16 text-amber-500" />
+          </div>
         </div>
 
         {/* Info */}
         <div className="text-center mb-8 px-2">
           <h1 className="font-display text-3xl text-gray-900 mb-2">{wedding.title}</h1>
-          <p className="text-gray-500 font-sans mb-1">
-            📅{" "}
+          <p className="text-gray-500 font-sans mb-1 flex items-center justify-center gap-1.5">
+            <FiCalendar className="w-4 h-4" />
             {new Date(wedding.date).toLocaleDateString("ru-RU", {
               day: "numeric",
               month: "long",
@@ -51,7 +53,10 @@ export default async function GuestWeddingPage({
             })}
           </p>
           {wedding.venue && (
-            <p className="text-gray-500 font-sans mb-4">📍 {wedding.venue}</p>
+            <p className="text-gray-500 font-sans mb-4 flex items-center justify-center gap-1.5">
+              <FiMapPin className="w-4 h-4" />
+              {wedding.venue}
+            </p>
           )}
           {wedding.greeting_text && (
             <p className="text-gray-600 font-sans text-sm leading-relaxed italic bg-white/60 rounded-2xl px-5 py-4">
@@ -63,8 +68,9 @@ export default async function GuestWeddingPage({
         {/* Stats */}
         {(photosCount || 0) > 0 && (
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl px-6 py-4 mb-6 text-center border border-white">
-            <p className="text-gray-500 font-sans text-sm">
-              📸 <strong className="text-gray-900">{photosCount}</strong> фото от{" "}
+            <p className="text-gray-500 font-sans text-sm flex items-center justify-center gap-1.5">
+              <FiCamera className="w-4 h-4" />
+              <strong className="text-gray-900">{photosCount}</strong> фото от{" "}
               <strong className="text-gray-900">{guestsCount}</strong> гостей
             </p>
           </div>
@@ -76,7 +82,7 @@ export default async function GuestWeddingPage({
             href={`/w/${weddingSlug}/tasks`}
             className="flex items-center justify-center gap-3 w-full bg-[#2D1B1B] hover:bg-[#3d2424] text-white font-semibold py-4 rounded-2xl transition-colors font-sans text-lg"
           >
-            <Camera size={22} />
+            <FiCamera size={22} />
             Начать съёмку
           </Link>
 
@@ -84,7 +90,7 @@ export default async function GuestWeddingPage({
             href={`/w/${weddingSlug}/upload`}
             className="flex items-center justify-center gap-3 w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-4 rounded-2xl transition-colors font-sans border border-gray-200"
           >
-            <Images size={20} />
+            <FiImage size={20} />
             Смотреть галерею
           </Link>
         </div>

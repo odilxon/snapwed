@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import JSZip from "jszip";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -21,6 +22,56 @@ export function generateSlug(title: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     + "-" + Date.now().toString(36);
+}
+
+export async function downloadGalleryAsZip(
+  photos: Array<{ storage_path: string }>,
+  weddingTitle: string,
+  onProgress?: (progress: number) => void
+): Promise<void> {
+  const zip = new JSZip();
+  const folder = zip.folder(weddingTitle.replace(/[^a-zA-Zа-яА-Я0-9]+/g, "_"));
+  
+  if (!folder) return;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  for (let i = 0; i < photos.length; i++) {
+    const photo = photos[i];
+    try {
+      const response = await fetch(
+        `${supabaseUrl}/storage/v1/object/public/photos/${photo.storage_path}`,
+        {
+          headers: {
+            Authorization: `Bearer ${supabaseKey}`,
+          },
+        }
+      );
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const fileName = `${i + 1}.jpg`;
+        folder.file(fileName, blob);
+      }
+    } catch (error) {
+      console.error(`Failed to download photo ${photo.storage_path}:`, error);
+    }
+
+    if (onProgress) {
+      onProgress(Math.round(((i + 1) / photos.length) * 100));
+    }
+  }
+
+  const content = await zip.generateAsync({ type: "blob" });
+  const url = URL.createObjectURL(content);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${weddingTitle.replace(/[^a-zA-Zа-яА-Я0-9]+/g, "_")}.zip`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 export async function compressImage(

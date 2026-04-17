@@ -115,9 +115,15 @@ export default function CameraCapture({
       task_id: taskId === "free" ? null : taskId,
     });
 
+    const { data: session } = await supabase
+      .from("guest_sessions")
+      .select("photos_count")
+      .eq("id", sessionId)
+      .single();
+    
     await supabase
       .from("guest_sessions")
-      .update({ photos_count: (await supabase.from("guest_sessions").select("photos_count").eq("id", sessionId).single()).data?.photos_count + 1 || 1 })
+      .update({ photos_count: (session?.photos_count || 0) + 1 })
       .eq("id", sessionId);
 
     setUploadProgress(100);
